@@ -1,0 +1,782 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <title>PS3 Browser AI - Powered by Kimi</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="pragma" content="no-cache">
+    <style type="text/css">
+        /* ==========================================
+           PS3 BROWSER AI - STYLESHEET
+           Optimized for NetFront 2008-2012
+           ========================================== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #0a0e27;
+            color: #ffffff;
+            font-family: "SCE PS3 Rodin", "Lucida Grande", Arial, sans-serif;
+            font-size: 14px;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* TOP BAR - Address & Controls */
+        #top-bar {
+            background: linear-gradient(to bottom, #001a33 0%, #000d1a 100%);
+            border-bottom: 2px solid #00d4ff;
+            padding: 8px;
+            height: 80px;
+        }
+        
+        #browser-title {
+            font-size: 18px;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        #address-bar-container {
+            width: 100%;
+            background: #0a0e27;
+            border: 2px solid #1a4a8a;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        #address-bar {
+            width: 75%;
+            padding: 8px;
+            background: #000;
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+            font-size: 14px;
+            font-family: monospace;
+        }
+        
+        .nav-btn {
+            width: 20%;
+            padding: 8px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .nav-btn:hover {
+            background: #66e0ff;
+        }
+        
+        /* TAB BAR */
+        #tab-bar {
+            background: #0f1a3a;
+            padding: 5px;
+            border-bottom: 1px solid #1a4a8a;
+            height: 35px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #1a3a6a;
+            border: 1px solid #1a4a8a;
+            border-bottom: none;
+            margin-right: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #88aadd;
+        }
+        
+        .tab.active {
+            background: #00d4ff;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        /* MAIN CONTENT AREA */
+        #main-container {
+            height: calc(100vh - 180px);
+            position: relative;
+        }
+        
+        /* BROWSER VIEW */
+        #browser-view {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+            display: block;
+        }
+        
+        /* AI SIDEBAR */
+        #ai-sidebar {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: #0f1a3a;
+            border-left: 2px solid #00d4ff;
+            overflow: hidden;
+            transition: width 0.3s;
+        }
+        
+        #ai-sidebar.open {
+            width: 350px;
+        }
+        
+        #ai-header {
+            background: #001a33;
+            padding: 10px;
+            border-bottom: 1px solid #00d4ff;
+            text-align: center;
+        }
+        
+        #ai-title {
+            color: #00d4ff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        #ai-chat {
+            height: calc(100% - 140px);
+            overflow: auto;
+            padding: 10px;
+            background: #0a0e27;
+        }
+        
+        .ai-message {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #1a3a6a;
+            border-left: 3px solid #ff00d4;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .user-message {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #1a4a8a;
+            border-left: 3px solid #00d4ff;
+            border-radius: 5px;
+            text-align: right;
+            font-size: 12px;
+        }
+        
+        #ai-input-area {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 10px;
+            background: #001a33;
+            border-top: 1px solid #00d4ff;
+        }
+        
+        #ai-input {
+            width: 100%;
+            height: 50px;
+            background: #0a0e27;
+            border: 1px solid #1a4a8a;
+            color: #fff;
+            padding: 5px;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .ai-btn {
+            width: 48%;
+            padding: 8px;
+            background: #ff00d4;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .ai-btn:hover {
+            background: #ff66e0;
+        }
+        
+        /* TOOLBAR */
+        #toolbar {
+            background: #0f1a3a;
+            padding: 8px;
+            border-top: 1px solid #1a4a8a;
+            height: 45px;
+            text-align: center;
+        }
+        
+        .tool-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #1a3a6a;
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+        
+        .tool-btn:hover {
+            background: #00d4ff;
+            color: #000;
+        }
+        
+        .tool-btn.active {
+            background: #ff00d4;
+            border-color: #ff00d4;
+            color: #fff;
+        }
+        
+        /* QUICK LINKS */
+        #quick-links {
+            background: #0a0e27;
+            padding: 10px;
+            border-top: 1px solid #1a4a8a;
+            display: none;
+        }
+        
+        .link-grid {
+            width: 100%;
+        }
+        
+        .link-grid td {
+            padding: 5px;
+            width: 25%;
+        }
+        
+        .quick-link {
+            display: block;
+            padding: 10px;
+            background: #1a3a6a;
+            border: 1px solid #1a4a8a;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+        
+        .quick-link:hover {
+            background: #00d4ff;
+            color: #000;
+        }
+        
+        /* LOADING OVERLAY */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-text {
+            color: #00d4ff;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        /* STATUS BAR */
+        #status-bar {
+            background: #000d1a;
+            padding: 5px;
+            font-size: 11px;
+            color: #88aadd;
+            border-top: 1px solid #1a4a8a;
+        }
+        
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0a0e27;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #1a4a8a;
+            border-radius: 4px;
+        }
+        
+        /* HIDDEN */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div id="top-bar">
+        <div id="browser-title">🌐 PS3 Browser AI + 🤖 Kimi Assistant</div>
+        <div id="address-bar-container">
+            <input type="text" id="address-bar" value="https://www.google.com" placeholder="Enter URL...">
+            <button class="nav-btn" onclick="navigate()">🚀 GO</button>
+        </div>
+    </div>
+
+    <!-- TAB BAR -->
+    <div id="tab-bar">
+        <div class="tab active" onclick="switchTab('web')" id="tab-web">🌐 Web</div>
+        <div class="tab" onclick="switchTab('kimi')" id="tab-kimi">🌙 Kimi AI</div>
+        <div class="tab" onclick="switchTab('dashboard')" id="tab-dashboard">📊 Dashboard</div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div id="main-container">
+        
+        <!-- BROWSER VIEW (Web Tab) -->
+        <iframe id="browser-view" src="https://www.google.com" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+        
+        <!-- KIMI AI VIEW -->
+        <div id="kimi-view" class="hidden" style="width:100%;height:100%;background:#0a0e27;">
+            <div style="padding:20px;text-align:center;">
+                <h2 style="color:#00d4ff;margin-bottom:20px;">🌙 Kimi AI (Moonshot AI)</h2>
+                <p style="color:#88aadd;margin-bottom:20px;">
+                    Klik tombol di bawah untuk membuka Kimi AI di tab baru.<br>
+                    Atau gunakan sidebar AI untuk asisten terintegrasi.
+                </p>
+                <button class="nav-btn" style="width:200px;padding:15px;" onclick="openKimi()">
+                    Buka Kimi AI
+                </button>
+                <p style="color:#666;font-size:11px;margin-top:20px;">
+                    Note: Kimi AI memerlukan akun dan mungkin tidak fully compatible dengan browser PS3.
+                </p>
+            </div>
+        </div>
+        
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard-view" class="hidden" style="width:100%;height:100%;background:#0a0e27;overflow:auto;">
+            <div style="padding:15px;">
+                <h3 style="color:#00d4ff;margin-bottom:15px;">📊 PS3 AI Dashboard</h3>
+                
+                <table class="link-grid">
+                    <tr>
+                        <td colspan="4" style="color:#ff00d4;font-weight:bold;padding:10px 0;">🔍 Search Engines</td>
+                    </tr>
+                    <tr>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.google.com')">Google</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.bing.com')">Bing</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://duckduckgo.com')">DuckDuckGo</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.baidu.com')">Baidu</a></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="4" style="color:#ff00d4;font-weight:bold;padding:15px 0 10px;">📺 Video & Media</td>
+                    </tr>
+                    <tr>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.youtube.com')">YouTube</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.twitch.tv')">Twitch</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.netflix.com')">Netflix</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://open.spotify.com')">Spotify</a></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="4" style="color:#ff00d4;font-weight:bold;padding:15px 0 10px;">🤖 AI Services</td>
+                    </tr>
+                    <tr>
+                        <td><a class="quick-link" href="#" onclick="goto('https://kimi.moonshot.cn')">Kimi AI</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://chat.openai.com')">ChatGPT</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://claude.ai')">Claude</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://gemini.google.com')">Gemini</a></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="4" style="color:#ff00d4;font-weight:bold;padding:15px 0 10px;">🎮 Gaming</td>
+                    </tr>
+                    <tr>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.chess.com')">Chess.com</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://kahoot.it')">Kahoot</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://boardgamearena.com')">Board Game</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.reddit.com/r/PS3')">r/PS3</a></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="4" style="color:#ff00d4;font-weight:bold;padding:15px 0 10px;">💬 Social</td>
+                    </tr>
+                    <tr>
+                        <td><a class="quick-link" href="#" onclick="goto('https://web.whatsapp.com')">WhatsApp</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://twitter.com')">Twitter</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://discord.com/app')">Discord</a></td>
+                        <td><a class="quick-link" href="#" onclick="goto('https://www.facebook.com')">Facebook</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- AI SIDEBAR -->
+        <div id="ai-sidebar">
+            <div id="ai-header">
+                <div id="ai-title">🤖 AI Assistant</div>
+                <div style="font-size:10px;color:#88aadd;">Mode: Offline</div>
+            </div>
+            
+            <div id="ai-chat">
+                <div class="ai-message">
+                    <strong>AI:</strong> Halo! Saya asisten AI untuk PS3. Saya bisa membantu menjelaskan website yang Anda kunjungi atau menjawab pertanyaan umum.
+                </div>
+            </div>
+            
+            <div id="ai-input-area">
+                <textarea id="ai-input" placeholder="Tanyakan sesuatu..."></textarea>
+                <button class="ai-btn" onclick="sendAIMessage()">Kirim</button>
+                <button class="ai-btn" onclick="analyzePage()" style="background:#00d4ff;color:#000;">Analisis Halaman</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div id="toolbar">
+        <button class="tool-btn" onclick="goBack()">⬅️ Back</button>
+        <button class="tool-btn" onclick="goForward()">➡️ Forward</button>
+        <button class="tool-btn" onclick="refresh()">🔄 Refresh</button>
+        <button class="tool-btn" onclick="toggleHome()">🏠 Home</button>
+        <button class="tool-btn" onclick="toggleAI()" id="btn-ai">🤖 AI Sidebar</button>
+        <button class="tool-btn" onclick="toggleQuickLinks()" id="btn-links">🔗 Quick Links</button>
+    </div>
+
+    <!-- QUICK LINKS PANEL -->
+    <div id="quick-links">
+        <table class="link-grid">
+            <tr>
+                <td><a class="quick-link" href="#" onclick="goto('https://www.google.com')">🔍 Google</a></td>
+                <td><a class="quick-link" href="#" onclick="goto('https://www.youtube.com')">📺 YouTube</a></td>
+                <td><a class="quick-link" href="#" onclick="goto('https://kimi.moonshot.cn')">🌙 Kimi</a></td>
+                <td><a class="quick-link" href="#" onclick="goto('https://www.psx-place.com')">🎮 PSX-Place</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div id="status-bar">
+        Ready | Mode: Web Browser + AI Assistant | Use arrow keys to navigate, ENTER to select
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading">
+        <div class="loading-text">
+            <div>⏳ Loading...</div>
+            <div style="font-size:12px;margin-top:10px;">Please wait</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script type="text/javascript">
+        // ==========================================
+        // PS3 BROWSER AI - CORE ENGINE
+        // ==========================================
+        
+        var currentUrl = "https://www.google.com";
+        var historyStack = [];
+        var historyIndex = -1;
+        var aiOpen = false;
+        var currentTab = 'web';
+        
+        // Knowledge Base untuk AI Offline
+        var aiKnowledge = {
+            "google": "Google adalah mesin pencari terbesar di dunia. Didirikan oleh Larry Page dan Sergey Brin pada 1998.",
+            "youtube": "YouTube adalah platform video sharing terbesar. Dibeli Google pada 2006.",
+            "kimi": "Kimi AI adalah asisten buatan Moonshot AI (China). Dikenal dengan kemampuan memproses context panjang.",
+            "ps3": "PlayStation 3 adalah konsol game generasi ketujuh Sony. Dirilis 2006, memiliki prosesor Cell unik.",
+            "netflix": "Netflix adalah layanan streaming video subscription-based terbesar di dunia.",
+            "facebook": "Facebook adalah platform social media terbesar. Didirikan Mark Zuckerberg 2004.",
+            "twitter": "Twitter (sekarang X) adalah platform microblogging. Dibeli Elon Musk 2022.",
+            "default": "Website ini adalah halaman web yang bisa Anda jelajahi. Gunakan toolbar untuk navigasi."
+        };
+        
+        // ==========================================
+        // NAVIGATION FUNCTIONS
+        // ==========================================
+        
+        function navigate() {
+            var url = document.getElementById('address-bar').value;
+            if (!url.match(/^https?:\/\//)) {
+                url = 'https://' + url;
+            }
+            goto(url);
+        }
+        
+        function goto(url) {
+            showLoading();
+            currentUrl = url;
+            document.getElementById('address-bar').value = url;
+            
+            // Add to history
+            if (historyIndex < historyStack.length - 1) {
+                historyStack = historyStack.slice(0, historyIndex + 1);
+            }
+            historyStack.push(url);
+            historyIndex++;
+            
+            // Update iframe
+            var iframe = document.getElementById('browser-view');
+            iframe.src = url;
+            
+            // Update status
+            updateStatus('Loading: ' + url);
+            
+            setTimeout(function() {
+                hideLoading();
+                updateStatus('Ready: ' + url);
+            }, 2000);
+        }
+        
+        function goBack() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                var url = historyStack[historyIndex];
+                document.getElementById('browser-view').src = url;
+                document.getElementById('address-bar').value = url;
+                currentUrl = url;
+            }
+        }
+        
+        function goForward() {
+            if (historyIndex < historyStack.length - 1) {
+                historyIndex++;
+                var url = historyStack[historyIndex];
+                document.getElementById('browser-view').src = url;
+                document.getElementById('address-bar').value = url;
+                currentUrl = url;
+            }
+        }
+        
+        function refresh() {
+            document.getElementById('browser-view').src = currentUrl;
+        }
+        
+        // ==========================================
+        // TAB FUNCTIONS
+        // ==========================================
+        
+        function switchTab(tab) {
+            // Hide all views
+            document.getElementById('browser-view').style.display = 'none';
+            document.getElementById('kimi-view').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'none';
+            
+            // Remove active from all tabs
+            document.getElementById('tab-web').className = 'tab';
+            document.getElementById('tab-kimi').className = 'tab';
+            document.getElementById('tab-dashboard').className = 'tab';
+            
+            // Show selected
+            if (tab === 'web') {
+                document.getElementById('browser-view').style.display = 'block';
+                document.getElementById('tab-web').className = 'tab active';
+            } else if (tab === 'kimi') {
+                document.getElementById('kimi-view').style.display = 'block';
+                document.getElementById('tab-kimi').className = 'tab active';
+            } else if (tab === 'dashboard') {
+                document.getElementById('dashboard-view').style.display = 'block';
+                document.getElementById('tab-dashboard').className = 'tab active';
+            }
+            
+            currentTab = tab;
+        }
+        
+        function openKimi() {
+            goto('https://kimi.moonshot.cn');
+            switchTab('web');
+        }
+        
+        // ==========================================
+        // AI SIDEBAR FUNCTIONS
+        // ==========================================
+        
+        function toggleAI() {
+            var sidebar = document.getElementById('ai-sidebar');
+            var btn = document.getElementById('btn-ai');
+            
+            if (aiOpen) {
+                sidebar.className = '';
+                btn.className = 'tool-btn';
+                aiOpen = false;
+            } else {
+                sidebar.className = 'open';
+                btn.className = 'tool-btn active';
+                aiOpen = true;
+            }
+        }
+        
+        function sendAIMessage() {
+            var input = document.getElementById('ai-input');
+            var text = input.value.trim();
+            
+            if (!text) return;
+            
+            // Add user message
+            addAIMessage(text, 'user');
+            input.value = '';
+            
+            // Generate response
+            setTimeout(function() {
+                var response = generateAIResponse(text);
+                addAIMessage(response, 'ai');
+            }, 500);
+        }
+        
+        function addAIMessage(text, type) {
+            var chat = document.getElementById('ai-chat');
+            var div = document.createElement('div');
+            div.className = type + '-message';
+            div.innerHTML = '<strong>' + (type === 'ai' ? 'AI' : 'Anda') + ':</strong> ' + escapeHtml(text);
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function generateAIResponse(input) {
+            var lower = input.toLowerCase();
+            
+            // Check knowledge base
+            for (var key in aiKnowledge) {
+                if (lower.indexOf(key) !== -1) {
+                    return aiKnowledge[key];
+                }
+            }
+            
+            // Context-aware responses
+            if (lower.indexOf('halaman') !== -1 || lower.indexOf('website') !== -1 || lower.indexOf('ini') !== -1) {
+                return analyzeCurrentPage();
+            }
+            
+            if (lower.indexOf('halo') !== -1 || lower.indexOf('hi') !== -1) {
+                return "Halo! Ada yang bisa saya bantu tentang website yang Anda kunjungi?";
+            }
+            
+            if (lower.indexOf('terima kasih') !== -1) {
+                return "Sama-sama! Senang bisa membantu. 🎮";
+            }
+            
+            // Default response
+            return "Saya bisa membantu menjelaskan website ini atau memberikan informasi umum. Coba tanyakan tentang website yang sedang Anda buka!";
+        }
+        
+        function analyzePage() {
+            var analysis = analyzeCurrentPage();
+            addAIMessage(analysis, 'ai');
+        }
+        
+        function analyzeCurrentPage() {
+            var url = currentUrl.toLowerCase();
+            var domain = url.replace(/^https?:\/\//, '').split('/')[0];
+            
+            for (var key in aiKnowledge) {
+                if (domain.indexOf(key) !== -1 || url.indexOf(key) !== -1) {
+                    return "Anda sedang di " + aiKnowledge[key];
+                }
+            }
+            
+            return "Anda sedang mengunjungi: " + domain + ". Ini adalah website yang bisa Anda jelajahi menggunakan toolbar navigasi.";
+        }
+        
+        function escapeHtml(text) {
+            return text.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;');
+        }
+        
+        // ==========================================
+        // UI FUNCTIONS
+        // ==========================================
+        
+        function toggleHome() {
+            goto('https://www.google.com');
+        }
+        
+        function toggleQuickLinks() {
+            var panel = document.getElementById('quick-links');
+            var btn = document.getElementById('btn-links');
+            
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                btn.className = 'tool-btn';
+            } else {
+                panel.style.display = 'block';
+                btn.className = 'tool-btn active';
+            }
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function updateStatus(text) {
+            document.getElementById('status-bar').innerHTML = text + ' | Gunakan TAB untuk navigasi, ENTER untuk memilih';
+        }
+        
+        // ==========================================
+        // KEYBOARD HANDLING
+        // ==========================================
+        
+        function handleKeyPress(e) {
+            // F5 = Refresh
+            if (e.keyCode === 116) {
+                e.preventDefault();
+                refresh();
+            }
+            // ESC = Toggle AI
+            if (e.keyCode === 27) {
+                toggleAI();
+            }
+            // F1 = Help
+            if (e.keyCode === 112) {
+                e.preventDefault();
+                alert('PS3 Browser AI:\n- Enter: Navigate\n- ESC: Toggle AI\n- F5: Refresh\n- TAB: Switch tabs');
+            }
+        }
+        
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        
+        function init() {
+            // Setup keyboard
+            if (document.addEventListener) {
+                document.addEventListener('keydown', handleKeyPress, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('onkeydown', handleKeyPress);
+            }
+            
+            // Focus address bar
+            document.getElementById('address-bar').focus();
+            
+            // Initial status
+            updateStatus('PS3 Browser AI Ready');
+        }
+        
+        // Start
+        if (window.addEventListener) {
+            window.addEventListener('load', init, false);
+        } else if (window.attachEvent) {
+            window.attachEvent('onload', init);
+        } else {
+            init();
+        }
+    </script>
+
+</body>
+</html>
